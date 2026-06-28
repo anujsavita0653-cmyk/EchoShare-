@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Dark application theme -->
+    <style name="Theme.EchoShare" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#D0BCFF</item>
+        <item name="colorOnPrimary">#381E72</item>
+        <item name="colorPrimaryContainer">#4F378B</item>
+        <item name="colorOnPrimaryContainer">#EADDFF</item>
+        <item name="colorSecondary">#CCC2DC</item>
+        <item name="colorOnSecondary">#332D41</item>
+        <item name="colorSecondaryContainer">#4A4458</item>
+        <item name="colorOnSecondaryContainer">#E8DEF8</item>
+        <item name="colorTertiary">#EFB8C8</item>
+        <item name="colorSurface">#1C1B1F</item>
+        <item name="colorOnSurface">#E6E1E5</item>
+        <item name="colorBackground">#1C1B1F</item>
+        <item name="colorOutline">#938F99</item>
+        <item name="android:statusBarColor">#1C1B1F</item>
+        <item name="android:navigationBarColor">#1C1B1F</item>
+    </style>
+
+</resources>
