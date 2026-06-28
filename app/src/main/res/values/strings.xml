@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EchoShare</string>
+    <string name="create_room">Create Room</string>
+    <string name="join_room">Join Room</string>
+    <string name="host_room">Host Room</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connecting">Connecting…</string>
+    <string name="scanning">Scanning for rooms…</string>
+    <string name="no_rooms_found">No rooms found.\nMake sure you\'re on the same Wi-Fi as the host.</string>
+    <string name="no_devices_connected">No devices connected yet.\nWaiting for clients to join…</string>
+    <string name="choose_mp3">Choose MP3 File</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="kick">Kick</string>
+    <string name="scan_again">Scan Again</string>
+    <string name="enter_ip">Enter IP</string>
+    <string name="enter_host_ip">Enter Host IP</string>
+    <string name="connect">Connect</string>
+    <string name="cancel">Cancel</string>
+    <string name="room_name_hint">Room name (e.g. Living Room)</string>
+    <string name="ip_hint">192.168.1.xxx</string>
+    <string name="share_audio_sync">Share audio. Stay in sync.</string>
+    <string name="echoshare_host_channel">EchoShare Host</string>
+    <string name="echoshare_client_channel">EchoShare Client</string>
+    <string name="audio_streaming_service">Audio streaming service</string>
+    <string name="audio_playback_service">Audio playback service</string>
+</resources>
