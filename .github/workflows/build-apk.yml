@@ -7,11 +7,9 @@ name: Build EchoShare APK
 
   jobs:
     build:
-      name: Build EchoShare APK
       runs-on: ubuntu-latest
-
       steps:
-        - name: Checkout repository
+        - name: Checkout
           uses: actions/checkout@v4
 
         - name: Set up JDK 17
@@ -20,43 +18,43 @@ name: Build EchoShare APK
             java-version: '17'
             distribution: 'temurin'
 
-        - name: Install Gradle 8.7
+        - name: Download Gradle 8.7
           run: |
             wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O /tmp/gradle.zip
-            unzip -q /tmp/gradle.zip -d /opt/gradle
-            echo "/opt/gradle/gradle-8.7/bin" >> $GITHUB_PATH
+            unzip -q /tmp/gradle.zip -d /opt
+            sudo ln -s /opt/gradle-8.7/bin/gradle /usr/local/bin/gradle
+            gradle --version
 
-        - name: Setup Android SDK
-          uses: android-actions/setup-android@v3
+        - name: Create local.properties
+          run: echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
 
-        - name: Accept Android Licenses
-          run: yes | sdkmanager --licenses || true
+        - name: Accept Android licenses
+          run: yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
         - name: Build Debug APK
           run: gradle assembleDebug --stacktrace --no-daemon
           env:
             ANDROID_HOME: /usr/local/lib/android/sdk
 
-        - name: Upload Debug APK
+        - name: Upload APK
           uses: actions/upload-artifact@v4
           with:
-            name: EchoShare-debug
+            name: EchoShare-debug-apk
             path: app/build/outputs/apk/debug/app-debug.apk
             retention-days: 30
 
         - name: Create Release
-          if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+          if: success()
           uses: softprops/action-gh-release@v2
           with:
             tag_name: build-${{ github.run_number }}
-            name: "EchoShare Build #${{ github.run_number }}"
+            name: "EchoShare APK - Build ${{ github.run_number }}"
             body: |
-              EchoShare APK ready hai!
+              ## EchoShare APK Taiyar Hai! 🎉
               
-              **Install karne ka tarika:**
-              1. app-debug.apk download karo
-              2. Phone mein Unknown Sources ON karo
+              **Install karo:**
+              1. Neeche se `app-debug.apk` download karo
+              2. Phone Settings → Unknown Sources ON karo
               3. APK install karo
             files: app/build/outputs/apk/debug/app-debug.apk
-            draft: false
   
