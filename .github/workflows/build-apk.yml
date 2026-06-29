@@ -19,13 +19,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Fix gradle-wrapper.jar
+      - name: Setup Gradle 8.7 directly
         run: |
           wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O /tmp/gradle.zip
-          unzip -q /tmp/gradle.zip "gradle-8.7/lib/gradle-wrapper.jar" -d /tmp/gd
-          cp /tmp/gd/gradle-8.7/lib/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
-          echo "JAR size: $(wc -c < gradle/wrapper/gradle-wrapper.jar) bytes"
-          chmod +x gradlew
+          unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
+          /tmp/gradle-dist/gradle-8.7/bin/gradle --version
+          echo "GRADLE_BIN=/tmp/gradle-dist/gradle-8.7/bin/gradle" >> $GITHUB_ENV
 
       - name: Create local.properties
         run: echo "sdk.dir=$ANDROID_HOME" > local.properties
@@ -34,9 +33,9 @@ jobs:
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon
+        run: $GRADLE_BIN assembleDebug --stacktrace --no-daemon
         env:
-          GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx4g"
+          GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
       - name: Upload APK
         if: success()
