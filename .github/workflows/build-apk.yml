@@ -8,7 +8,7 @@ name: Build EchoShare APK
   jobs:
     build:
       runs-on: ubuntu-latest
-      
+
       steps:
         - name: Checkout repository
           uses: actions/checkout@v4
@@ -18,60 +18,44 @@ name: Build EchoShare APK
           with:
             java-version: '17'
             distribution: 'temurin'
-            cache: 'gradle'
 
-        - name: Fix gradle-wrapper.jar (extract from Gradle 8.7 distribution)
+        - name: Fix gradle-wrapper.jar
           run: |
-            echo "Downloading Gradle 8.7 distribution..."
-            wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O /tmp/gradle-8.7.zip
-            echo "Extracting gradle-wrapper.jar..."
-            unzip -q /tmp/gradle-8.7.zip "gradle-8.7/lib/gradle-wrapper.jar" -d /tmp/gradle-extracted
-            ls -la /tmp/gradle-extracted/gradle-8.7/lib/
-            cp /tmp/gradle-extracted/gradle-8.7/lib/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
-            echo "Wrapper jar size: $(wc -c < gradle/wrapper/gradle-wrapper.jar) bytes"
+            wget -q https://services.gradle.org/distributions/gradle-8.7-bin.zip -O /tmp/gradle.zip
+            unzip -q /tmp/gradle.zip "gradle-8.7/lib/gradle-wrapper.jar" -d /tmp/gd
+            cp /tmp/gd/gradle-8.7/lib/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
+            echo "JAR size: $(wc -c < gradle/wrapper/gradle-wrapper.jar) bytes"
             chmod +x gradlew
 
         - name: Create local.properties
-          run: |
-            echo "sdk.dir=$ANDROID_HOME" > local.properties
-            cat local.properties
+          run: echo "sdk.dir=$ANDROID_HOME" > local.properties
 
-        - name: Accept Android SDK licenses
-          run: |
-            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        - name: Accept SDK licenses
+          run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
         - name: Build Debug APK
-          run: ./gradlew assembleDebug --stacktrace --no-daemon -Dorg.gradle.jvmargs="-Xmx4g"
+          run: ./gradlew assembleDebug --stacktrace --no-daemon
           env:
-            GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+            GRADLE_OPTS: "-Dorg.gradle.daemon=false -Xmx4g"
 
-        - name: Upload Debug APK as artifact
+        - name: Upload APK
+          if: success()
           uses: actions/upload-artifact@v4
           with:
             name: EchoShare-debug
             path: app/build/outputs/apk/debug/app-debug.apk
             retention-days: 30
 
-        - name: Create GitHub Release with APK
+        - name: Create Release
           if: success()
           uses: softprops/action-gh-release@v2
           with:
-            tag_name: v1.0-build${{ github.run_number }}
-            name: "EchoShare v1.0 (Build ${{ github.run_number }})"
+            tag_name: v1.0-b${{ github.run_number }}
+            name: EchoShare v1.0 Build ${{ github.run_number }}
             body: |
-              ## EchoShare APK Ready! 🎉
-              
-              **Kaise install karein:**
-              1. Neeche se `app-debug.apk` download karein
-              2. Phone Settings → Security → Unknown Sources ON karein
-              3. APK par tap karke install karein
-              
-              **Features:**
-              - 🎵 Real-time audio streaming over Wi-Fi
-              - 📱 Host + Client mode
-              - 🔍 Auto device discovery (UDP)
-              - ⏯ Play/Pause/Stop controls
+              EchoShare APK taiyar hai!
+              1. app-debug.apk download karo
+              2. Unknown Sources ON karo
+              3. Install karo
             files: app/build/outputs/apk/debug/app-debug.apk
-            draft: false
-            prerelease: false
   
